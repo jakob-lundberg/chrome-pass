@@ -22,7 +22,8 @@ function getPass(root, url, user, tabId) {
         if(response) {
           chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
             currentTab = tabs[0];
-            chrome.tabs.sendMessage(currentTab.id, { action: "fill-pass", user: user, pass: response.pass });
+            var msg = { action: "fill-pass", user: response.user, pass: response.pass };
+            chrome.tabs.sendMessage(currentTab.id, msg);
           });
         } else {
           console.log("Native app returned no response");

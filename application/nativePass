@@ -63,6 +63,22 @@ def get_list(pattern):
 
   return sorted(credentials, key = sort_key, reverse = True)
 
+# Returns the pass username for the specified path. The path must corresponde to
+# a unique existing gpg file inside the password store.
+def get_username(path):
+  gpg = gnupg.GPG()
+  txt = open(get_store_path() + "/" + path + ".gpg", "rb")
+  data = gpg.decrypt_file(txt)
+  if data.status == "decryption ok":
+    for line in str(data).splitlines(True):
+        key, value = line.partition(':')[::2]
+        if key == 'username':
+            return value.strip()
+        if key == 'user':
+            return value.strip()
+
+  return ""
+
 # Returns the pass password for the specified path. The path must corresponde to
 # a unique existing gpg file inside the password store.
 def get_pass(path):
@@ -101,7 +117,7 @@ def process_native():
     elif action == "get-pass":
       user = request["user"]
       path = request["path"]
-      send_message({ "action": "fill-pass", "user": user, "pass": get_pass(path) })
+      send_message({ "action": "fill-pass", "user": get_username(path), "pass": get_pass(path) })
   except Exception:
     send_message({ "action": "error", "msg": sys.exc_info()[0] })
 
