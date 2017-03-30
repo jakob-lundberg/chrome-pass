@@ -36,11 +36,13 @@ function filterlist(selectobj) {
         // If a single match is found the whole group is displayed.
         if (regexp.test(user) || regexp.test(url)) {
           group.className = "";
+          option.className = "";
           break;
         }
 
         // If no match is found then the group is hidden.
-        group.className = "hidden"
+        group.className = "hidden";
+        option.className = "hidden";
       }
     }
 

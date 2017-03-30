@@ -38,7 +38,7 @@ def similarity(pattern1, pattern2):
 # as sort key for sorting the credential list based on similarity to the search
 # pattern.
 def sort_key(credential):
-  score = similarity(credential[1], credential[3])
+  score = similarity(credential[2], credential[3])
   return score
 
 # Returns a list of credentials ordered by similarity to the pattern argument.
