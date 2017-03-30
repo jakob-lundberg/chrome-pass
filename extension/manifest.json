@@ -30,6 +30,14 @@
   "background": {
     "scripts": ["background.js"]
   },
+  "commands": {
+      "fill-password": {
+          "suggested_key": {
+              "default": "Ctrl+Shift+U"
+          },
+          "description": "Autofill password"
+      }
+  },
   "permissions": [
     "tabs",
     "nativeMessaging",

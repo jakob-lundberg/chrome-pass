@@ -69,7 +69,7 @@ chrome.runtime.onMessage.addListener(function(msg) {
       }
       break;
     case "error":
-      console.log("chrome-pass: error " + response.msg);
+      console.log("chrome-pass: error " + msg.msg);
       break;
   }
 });
