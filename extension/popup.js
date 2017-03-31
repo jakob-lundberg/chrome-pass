@@ -68,4 +68,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 }, false);
 
+function store_password() {
+  console.log("store password");
+  var storeView = document.getElementById("storeView");
+  var searchView = document.getElementById("searchView");
+  storeView.className = "";
+  searchView.className = "hidden";
+}
 
+document.getElementById('storeButton').addEventListener('click', store_password);

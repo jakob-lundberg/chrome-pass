@@ -7,9 +7,9 @@ function Form(user, pass) {
 Form.prototype = {
 
   fillPass: function(user, pass) {
+    this.copyToClipboard(pass);
     this.user.value = user;
     this.pass.value = pass;
-    this.copyToClipboard(pass);
   },
 
   copyToClipboard: function(txt) {

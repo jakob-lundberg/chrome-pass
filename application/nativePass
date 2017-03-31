@@ -131,6 +131,12 @@ def process_native():
       path = request["path"]
       msg = { "action": "fill-pass", "user": get_username(path), "pass": get_pass(path) }
       send_message(msg)
+    elif action == "save-pass":
+      url = request["url"]
+      user = request["user"]
+      password = request["pass"]
+      schema = request["schema"]
+      print(user, password, schema, file=sys.stderr)
   except Exception as exception:
     msg = { "action": "error", "msg": type(exception).__name__ }
     print(msg, file=sys.stderr)
