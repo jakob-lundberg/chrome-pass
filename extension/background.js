@@ -73,18 +73,22 @@ chrome.runtime.onMessage.addListener(function(msg, sender, response) {
 chrome.commands.onCommand.addListener(function(command, sender) {
   switch(command) {
     case "fill-password":
-      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        currentTab = tabs[0];
+      chrome.storage.sync.get({
+        schema: 'filename',
+      }, function(storage) {
+        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+          currentTab = tabs[0];
 
-        chrome.runtime.sendNativeMessage('com.piaotech.chrome.extension.pass',
-          { action: "get-creds", url: currentTab.url },
-          function(response) {
-            if(response) {
-              credential = response.credentials[0];
-              getPass(credential[0], credential[1], credential[2]);
+          chrome.runtime.sendNativeMessage('com.piaotech.chrome.extension.pass',
+            { action: "get-creds", url: currentTab.url, schema: storage.schema},
+            function(response) {
+              if(response) {
+                credential = response.credentials[0];
+                getPass(credential[0], credential[1], credential[2]);
+              }
             }
-          }
-        );
+          );
+        })
       })
   }
 })

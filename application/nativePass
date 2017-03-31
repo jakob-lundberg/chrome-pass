@@ -109,7 +109,6 @@ def send_message(message):
 # Method that implements Chrome Native App protocol for messaging.
 def process_native():
   size = sys.stdin.buffer.read(4)
-  print("got message",file=sys.stderr);
 
   if not size:
     send_message({ "action": "error", "msg": "no data" })
@@ -119,7 +118,6 @@ def process_native():
     length = struct.unpack('I', size)[0]
     data = sys.stdin.buffer.read(length)
     request = json.loads(data.decode('utf-8'))
-    print(request)
     action = request["action"]
     if action == "get-creds":
       pattern = urlparse(request["url"]).netloc
@@ -131,9 +129,12 @@ def process_native():
     elif action == "get-pass":
       user = request["user"]
       path = request["path"]
-      send_message({ "action": "fill-pass", "user": get_username(path), "pass": get_pass(path) })
-  except Exception:
-    send_message({ "action": "error", "msg": sys.exc_info()[0] })
+      msg = { "action": "fill-pass", "user": get_username(path), "pass": get_pass(path) }
+      send_message(msg)
+  except Exception as exception:
+    msg = { "action": "error", "msg": type(exception).__name__ }
+    print(msg, file=sys.stderr)
+    send_message(msg)
 
 # Method prints to stdout the list of credentials ordered by a similarity to
 # pattern.

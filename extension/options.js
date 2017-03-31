@@ -19,7 +19,7 @@ function restore_options() {
   chrome.storage.sync.get({
     schema: 'filename',
   }, function(items) {
-    document.getElementById('username').value = items.schema;
+    document.getElementById('schema').value = items.schema;
   });
 }
 document.addEventListener('DOMContentLoaded', restore_options);
