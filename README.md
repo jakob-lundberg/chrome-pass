@@ -51,6 +51,11 @@ limitation.
 
 ## Password Paths
 
+There are 2 different storage schemas for your password store. Select the one
+your are following in the extention options.
+
+### Username in file name
+
 This plugin assumes that the last two parts of each password path follows this structure:
 
     [Service URL]/[Account]
@@ -74,6 +79,21 @@ Password Store
 
 Your paths can be as long as you want as long as the last two follow the above structure. And the [Service URL] part must match the URL of the page you are loading because this is the one used for searching.
 
+### Username is stored in the gpg file
+
+With this storage schema is the username stored encrypted in the gpg file. It
+should be stored on a line with user: or username:
+```
+<password>
+user: <username>
+```
+```
+<password>
+username: <username>
+```
+
+The filename will be used as the url when matching for searches.
+
 # Install from source
 
 This is for developers only or people that want to see the source code before trusting their passwords to some
@@ -96,6 +116,8 @@ Next we need to install the *nativePass* wrapper script and install the Native H
  - Click the username you want to fill into the login form from the list.
    - You may type a search term in the search box to filter the list of usernames.
  - The form should be automatically filled with the username and corresponding password.
+ - Ctrl + Shift + U is configured as default to trigger auto-fill of username
+   and password.
 
 # Troubleshooting
 
