@@ -29,15 +29,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         for(var i = 0; i < credentials.length; i++) {
           var root = credentials[i][0];
-          var url = credentials[i][1];
-          var user = credentials[i][2];
+          var dir = credentials[i][1];
+          var file = credentials[i][2];
 
-          if (url in optGroups) {
-            var group = optGroups[url];
+          if (dir in optGroups) {
+            var group = optGroups[dir];
           } else {
             var group = document.createElement("optgroup");
-            group.label = url;
-            optGroups[url] = group;
+            group.label = dir;
+            optGroups[dir] = group;
             select.appendChild(group);
           }
 
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
           option.value = credentials[i][2];
           option.text = credentials[i][2];
           option.setAttribute("data-root", credentials[i][0]);
-          option.setAttribute("data-url", credentials[i][1]);
+          option.setAttribute("data-dir", credentials[i][1]);
           group.appendChild(option);
         }
 

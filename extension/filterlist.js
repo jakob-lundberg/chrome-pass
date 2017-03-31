@@ -28,21 +28,24 @@ function filterlist(selectobj) {
       var group = groups[i];
       var options = group.getElementsByTagName("option");
 
+      // If no match is found then the group is hidden.
+      group.className = "hidden";
       for(var j = 0; j < options.length; j++) {
         var option = options[j];
-        var url    = option.getAttribute("data-url");
-        var user   = option.value;
+        var dir    = option.getAttribute("data-dir");
+        var file   = option.value;
 
+        option.className = "hidden";
         // If a single match is found the whole group is displayed.
-        if (regexp.test(user) || regexp.test(url)) {
+        if (regexp.test(dir)) {
           group.className = "";
           option.className = "";
-          break;
+        }
+        if (regexp.test(file)) {
+          option.className = "";
+          group.className = "";
         }
 
-        // If no match is found then the group is hidden.
-        group.className = "hidden";
-        option.className = "hidden";
       }
     }
 

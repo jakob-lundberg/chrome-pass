@@ -43,11 +43,10 @@ def sort_key(credential):
 
 # Returns a list of credentials ordered by similarity to the pattern argument.
 # The list is a list of lists with the format:
-# 
-#  [ 
-#    [ "store path", "url", "username", "pattern" ],
-#    [ "store path", "url", "username", "pattern" ],
-#    [ "store path", "url", "username", "pattern" ],
+#  [
+#    [ "store path", "directory", "filename", "pattern" ],
+#    [ "store path", "directory", "filename", "pattern" ],
+#    [ "store path", "directory", "filename", "pattern" ],
 #    .....
 #  ]
 def get_list(pattern):

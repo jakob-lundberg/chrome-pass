@@ -21,9 +21,16 @@ function getPass(root, url, user, tabId) {
       function(response) {
         if(response) {
           chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-            currentTab = tabs[0];
-            var msg = { action: "fill-pass", user: response.user, pass: response.pass };
-            chrome.tabs.sendMessage(currentTab.id, msg);
+            chrome.storage.sync.get({
+              username: 'filename',
+            }, function(items) {
+              if (items.username == 'filecontent'){
+                user = response.user;
+              }
+              currentTab = tabs[0];
+              var msg = { action: "fill-pass", user: user, pass: response.pass };
+              chrome.tabs.sendMessage(currentTab.id, msg);
+            })
           });
         } else {
           console.log("Native app returned no response");
