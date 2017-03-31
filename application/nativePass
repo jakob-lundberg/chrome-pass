@@ -37,7 +37,11 @@ def similarity(pattern1, pattern2):
 # Returns the similarity score of a credential to a pattern. This method is used
 # as sort key for sorting the credential list based on similarity to the search
 # pattern.
-def sort_key(credential):
+def sort_key_directory(credential):
+  score = similarity(credential[1], credential[3])
+  return score
+
+def sort_key_filename(credential):
   score = similarity(credential[2], credential[3])
   return score
 
@@ -49,16 +53,21 @@ def sort_key(credential):
 #    [ "store path", "directory", "filename", "pattern" ],
 #    .....
 #  ]
-def get_list(pattern):
+def get_list(pattern, schema='filename'):
   credentials = []
+  if schema == 'filecontent':
+      sort_key = sort_key_filename
+  else:
+      sort_key = sort_key_directory
+
   for root, dirs, files in os.walk(get_store_path(), followlinks=True):
     if len(files) > 0:
       for f in files:
         if f.endswith(".gpg"):
           cred_path = root.replace(get_store_path(), "")
-          cred_url = os.path.basename(os.path.normpath(cred_path))
-          cred_user = f.replace(".gpg", "")
-          credentials.append([cred_path, cred_url, cred_user, pattern])
+          cred_dir = os.path.basename(os.path.normpath(cred_path))
+          cred_file = f.replace(".gpg", "")
+          credentials.append([cred_path, cred_dir, cred_file, pattern])
 
   return sorted(credentials, key = sort_key, reverse = True)
 
@@ -100,6 +109,7 @@ def send_message(message):
 # Method that implements Chrome Native App protocol for messaging.
 def process_native():
   size = sys.stdin.buffer.read(4)
+  print("got message",file=sys.stderr);
 
   if not size:
     send_message({ "action": "error", "msg": "no data" })
@@ -109,10 +119,15 @@ def process_native():
     length = struct.unpack('I', size)[0]
     data = sys.stdin.buffer.read(length)
     request = json.loads(data.decode('utf-8'))
+    print(request)
     action = request["action"]
     if action == "get-creds":
       pattern = urlparse(request["url"]).netloc
-      send_message({ "action": "fill-creds", "credentials": get_list(pattern), "url": pattern })
+      send_message({ 
+          "action": "fill-creds",
+          "credentials": get_list(pattern, schema = request['schema']),
+          "url": pattern
+      })
     elif action == "get-pass":
       user = request["user"]
       path = request["path"]

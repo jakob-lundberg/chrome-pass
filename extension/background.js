@@ -1,6 +1,9 @@
 function getCredentials(url, tabId) {
-  chrome.runtime.sendNativeMessage('com.piaotech.chrome.extension.pass',
-      { action: "get-creds", url: url },
+  chrome.storage.sync.get({
+    schema: 'filename',
+  }, function(storage) {
+    chrome.runtime.sendNativeMessage('com.piaotech.chrome.extension.pass',
+      { action: "get-creds", url: url, schema: storage.schema },
       function(response) {
         if(response) {
           if(tabId) {
@@ -12,32 +15,40 @@ function getCredentials(url, tabId) {
           chrome.runtime.sendMessage({ action: "native-app-error" });
         }
       }
-  );
+    );
+  })
 }
 
 function getPass(root, url, user, tabId) {
-  chrome.runtime.sendNativeMessage('com.piaotech.chrome.extension.pass',
-      { action: "get-pass", user: user, path: root + "/" + user },
+  chrome.storage.sync.get({
+    schema: 'filename',
+  }, function(storage) {
+    chrome.runtime.sendNativeMessage('com.piaotech.chrome.extension.pass',
+      { action: "get-pass",
+        user: user,
+        path: root + "/" + user
+      },
       function(response) {
         if(response) {
           chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-            chrome.storage.sync.get({
-              username: 'filename',
-            }, function(items) {
-              if (items.username == 'filecontent'){
-                user = response.user;
-              }
-              currentTab = tabs[0];
-              var msg = { action: "fill-pass", user: user, pass: response.pass };
-              chrome.tabs.sendMessage(currentTab.id, msg);
-            })
+            if (storage.schema == 'filecontent'){
+              user = response.user;
+            }
+            currentTab = tabs[0];
+            var msg = {
+              action: "fill-pass",
+              user: user,
+              pass: response.pass
+            };
+            chrome.tabs.sendMessage(currentTab.id, msg);
           });
         } else {
           console.log("Native app returned no response");
           chrome.runtime.sendMessage({ action: "native-app-error" });
         }
       }
-  );
+    );
+  })
 }
 
 chrome.runtime.onMessage.addListener(function(msg, sender, response) {
