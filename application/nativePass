@@ -2,6 +2,7 @@
 
 # Requires python-gpg library
 import os
+import subprocess
 import sys
 import json
 import gnupg
@@ -74,16 +75,13 @@ def get_list(pattern, schema='filename'):
 # Returns the pass username for the specified path. The path must corresponde to
 # a unique existing gpg file inside the password store.
 def get_username(path):
-  gpg = gnupg.GPG()
-  txt = open(get_store_path() + "/" + path + ".gpg", "rb")
-  data = gpg.decrypt_file(txt)
-  if data.status == "decryption ok":
-    for line in str(data).splitlines(True):
-        key, value = line.partition(':')[::2]
-        if key == 'username':
-            return value.strip()
-        if key == 'user':
-            return value.strip()
+  data = subprocess.getoutput("pass show " + path)
+  for line in data.splitlines(True):
+      key, value = line.partition(':')[::2]
+      if key == 'username':
+          return value.strip()
+      if key == 'user':
+          return value.strip()
 
   return ""
 
@@ -91,11 +89,8 @@ def get_username(path):
 # a unique existing gpg file inside the password store.
 def get_pass(path):
   password = ""
-  gpg = gnupg.GPG()
-  txt = open(get_store_path() + "/" + path + ".gpg", "rb")
-  data = gpg.decrypt_file(txt)
-  if data.status == "decryption ok":
-    password = data.data.decode('utf-8').split("\n")[0]
+  data = subprocess.getoutput("pass show " + path)
+  password = data.split("\n")[0]
 
   return password
 
@@ -215,3 +210,4 @@ if len(sys.argv) > 1:
   else:
     print_creds(sys.argv[1])
 
+# vim: tabstop=2 shiftwidth=2 expandtab
